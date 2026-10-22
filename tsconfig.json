@@ -11,6 +11,6 @@
     "esModuleInterop": true,
     "moduleResolution": "node10",
   },
-  "include": ["index.js", "credentials/**/*.js", "nodes/**/*.js"],
+  "include": ["index.ts", "credentials/**/*.ts", "nodes/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

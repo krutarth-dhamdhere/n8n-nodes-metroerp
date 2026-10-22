@@ -1,6 +1,8 @@
-'use strict';
-
-const { NodeConnectionTypes, NodeOperationError } = require('n8n-workflow');
+import {
+	type IExecuteFunctions,
+	NodeConnectionTypes,
+	NodeOperationError,
+} from 'n8n-workflow';
 
 /**
  * Helpers are module-level functions (not class methods).
@@ -9,7 +11,7 @@ const { NodeConnectionTypes, NodeOperationError } = require('n8n-workflow');
  */
 
 async function apiRequest(baseUrl, method, path, body) {
-	const options = {
+	const options: Record<string, unknown> = {
 		method,
 		url: `${baseUrl}${path}`,
 		headers: {
@@ -33,7 +35,7 @@ async function apiRequest(baseUrl, method, path, body) {
 	if (typeof response === 'string') {
 		try {
 			return JSON.parse(response);
-		} catch (e) {
+		} catch {
 			return { raw: response };
 		}
 	}
@@ -116,7 +118,7 @@ async function handleContact(baseUrl, operation, itemIndex) {
 
 	if (operation === 'update') {
 		const id = this.getNodeParameter('contactId', itemIndex);
-		const body = {};
+		const body: Record<string, unknown> = {};
 		const name = this.getNodeParameter('name', itemIndex);
 		const email = this.getNodeParameter('email', itemIndex);
 		const phone = this.getNodeParameter('phone', itemIndex);
@@ -160,7 +162,7 @@ async function handleInvoice(baseUrl, operation, itemIndex, resource) {
 		const lineCollection = this.getNodeParameter('lineItems', itemIndex, {});
 		const rawLines = lineCollection.item || [];
 		const line_items = rawLines.map((li) => {
-			const item = {
+			const item: Record<string, unknown> = {
 				description: li.description,
 				quantity: li.quantity,
 				unit_amount: li.unitAmount,
@@ -184,7 +186,7 @@ async function handleInvoice(baseUrl, operation, itemIndex, resource) {
 			return item;
 		});
 
-		const body = {
+		const body: Record<string, unknown> = {
 			reference: this.getNodeParameter('reference', itemIndex) || undefined,
 			invoice_date: toDateOnly(this.getNodeParameter('invoiceDate', itemIndex)),
 			due_date: toDateOnly(this.getNodeParameter('dueDate', itemIndex)),
@@ -213,7 +215,8 @@ async function handleInvoice(baseUrl, operation, itemIndex, resource) {
 					email: contactEmail || undefined,
 				};
 			}
-			if (!body.line_items || !body.line_items.length) {
+			const lines = body.line_items as unknown[] | undefined;
+			if (!lines || !lines.length) {
 				throw new NodeOperationError(this.getNode(), 'At least one line item is required', {
 					itemIndex,
 				});
@@ -296,7 +299,7 @@ const billJsonDefault = `={{
 }
 }}`;
 
-class MetroErp {
+export class MetroErp {
 	description = {
 		displayName: 'MetroERP',
 		name: 'metroErp',
@@ -399,7 +402,7 @@ class MetroErp {
 				type: 'json',
 				default: invoiceJsonDefault,
 				description:
-					'Request body sent to MetroERP. Use expressions ($json.…) to map Excel/previous-node columns.',
+					'Request body sent to MetroERP. Use expressions to map Excel or previous-node columns.',
 				displayOptions: {
 					show: {
 						resource: ['invoice'],
@@ -414,7 +417,7 @@ class MetroErp {
 				type: 'json',
 				default: billJsonDefault,
 				description:
-					'Request body sent to MetroERP. Use expressions ($json.…) to map Excel/previous-node columns.',
+					'Request body sent to MetroERP. Use expressions to map Excel or previous-node columns.',
 				displayOptions: {
 					show: {
 						resource: ['bill'],
@@ -436,7 +439,7 @@ class MetroErp {
 }
 }}`,
 				description:
-					'Request body sent to MetroERP. Use expressions ($json.…) to map Excel/previous-node columns.',
+					'Request body sent to MetroERP. Use expressions to map Excel or previous-node columns.',
 				displayOptions: {
 					show: {
 						resource: ['contact'],
@@ -492,6 +495,7 @@ class MetroErp {
 				name: 'email',
 				type: 'string',
 				default: '',
+				placeholder: 'name@email.com',
 				displayOptions: {
 					show: {
 						resource: ['contact'],
@@ -542,6 +546,7 @@ class MetroErp {
 				type: 'number',
 				typeOptions: { minValue: 1, maxValue: 200 },
 				default: 50,
+				description: 'Max number of results to return',
 				displayOptions: {
 					show: {
 						resource: ['contact', 'invoice', 'bill'],
@@ -735,29 +740,22 @@ class MetroErp {
 						displayName: 'Item',
 						values: [
 							{
+								displayName: 'Account Code',
+								name: 'accountCode',
+								type: 'string',
+								default: '',
+							},
+							{
 								displayName: 'Description',
 								name: 'description',
 								type: 'string',
 								default: '',
 							},
 							{
-								displayName: 'Quantity',
-								name: 'quantity',
-								type: 'number',
-								default: 1,
-							},
-							{
-								displayName: 'Unit Amount',
-								name: 'unitAmount',
+								displayName: 'Discount',
+								name: 'discount',
 								type: 'number',
 								default: 0,
-							},
-							{
-								displayName: 'UoM',
-								name: 'uom',
-								type: 'string',
-								default: '',
-								description: 'Unit of measure name (e.g. Units)',
 							},
 							{
 								displayName: 'Discount Type',
@@ -768,18 +766,6 @@ class MetroErp {
 									{ name: 'Fixed', value: 'fixed' },
 								],
 								default: 'percent',
-							},
-							{
-								displayName: 'Discount',
-								name: 'discount',
-								type: 'number',
-								default: 0,
-							},
-							{
-								displayName: 'Account Code',
-								name: 'accountCode',
-								type: 'string',
-								default: '',
 							},
 							{
 								displayName: 'Product Code',
@@ -794,11 +780,30 @@ class MetroErp {
 								default: '',
 							},
 							{
+								displayName: 'Quantity',
+								name: 'quantity',
+								type: 'number',
+								default: 1,
+							},
+							{
 								displayName: 'Tax IDs',
 								name: 'taxIds',
 								type: 'string',
 								default: '',
 								description: 'Comma-separated Odoo tax IDs, e.g. 1,2',
+							},
+							{
+								displayName: 'Unit Amount',
+								name: 'unitAmount',
+								type: 'number',
+								default: 0,
+							},
+							{
+								displayName: 'UoM',
+								name: 'uom',
+								type: 'string',
+								default: '',
+								description: 'Unit of measure name (e.g. Units)',
 							},
 						],
 					},
@@ -822,7 +827,7 @@ class MetroErp {
 		],
 	};
 
-	async execute() {
+	async execute(this: IExecuteFunctions) {
 		const items = this.getInputData();
 		const returnData = [];
 		const credentials = await this.getCredentials('metroErpApi');
@@ -864,5 +869,3 @@ class MetroErp {
 		return [returnData];
 	}
 }
-
-module.exports = { MetroErp };

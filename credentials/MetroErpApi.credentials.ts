@@ -1,10 +1,20 @@
-'use strict';
+import type {
+	IAuthenticateGeneric,
+	ICredentialTestRequest,
+	ICredentialType,
+	INodeProperties,
+} from 'n8n-workflow';
 
-class MetroErpApi {
+export class MetroErpApi implements ICredentialType {
 	name = 'metroErpApi';
+
 	displayName = 'MetroERP API';
+
+	icon = 'file:metroerp.svg' as const;
+
 	documentationUrl = 'https://metrogroup.solutions/';
-	properties = [
+
+	properties: INodeProperties[] = [
 		{
 			displayName: 'Base URL',
 			name: 'baseUrl',
@@ -25,7 +35,7 @@ class MetroErpApi {
 		},
 	];
 
-	authenticate = {
+	authenticate: IAuthenticateGeneric = {
 		type: 'generic',
 		properties: {
 			headers: {
@@ -34,7 +44,7 @@ class MetroErpApi {
 		},
 	};
 
-	test = {
+	test: ICredentialTestRequest = {
 		request: {
 			baseURL: '={{$credentials.baseUrl}}',
 			url: '/api/n8n/v1/health',
@@ -42,5 +52,3 @@ class MetroErpApi {
 		},
 	};
 }
-
-module.exports = { MetroErpApi };

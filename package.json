@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-metroerp",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "n8n node for MetroERP contacts, invoices, and vendor bills",
   "keywords": [
     "n8n-community-node-package",
@@ -19,27 +19,23 @@
     "name": "Metro",
     "email": "krutarth@metrogroup.solutions"
   },
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "n8n-node build",
+    "build": "n8n-node build && mkdir -p dist/nodes/MetroErp && cp nodes/MetroErp/MetroErp.node.json dist/nodes/MetroErp/MetroErp.node.json",
     "dev": "n8n-node dev",
     "lint": "n8n-node lint",
     "release": "n8n-node release"
   },
   "files": [
-    "credentials",
-    "nodes",
-    "index.js",
-    "LICENSE",
-    "README.md"
+    "dist"
   ],
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "credentials/MetroErpApi.credentials.js"
+      "dist/credentials/MetroErpApi.credentials.js"
     ],
     "nodes": [
-      "nodes/MetroErp/MetroErp.node.js"
+      "dist/nodes/MetroErp/MetroErp.node.js"
     ]
   },
   "devDependencies": {
