@@ -11,6 +11,10 @@
     "accounting"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krutarthmetro/n8n-nodes-metroerp.git"
+  },
   "author": {
     "name": "Metro",
     "email": "support@metrogroup.solutions"
