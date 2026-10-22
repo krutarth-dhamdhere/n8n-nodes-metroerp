@@ -39,7 +39,9 @@
     ]
   },
   "devDependencies": {
-    "@n8n/node-cli": "^0.23.0"
+    "@n8n/node-cli": "^0.23.0",
+    "eslint": "^9.29.0",
+    "typescript": "^5.9.2"
   },
   "peerDependencies": {
     "n8n-workflow": "*"
