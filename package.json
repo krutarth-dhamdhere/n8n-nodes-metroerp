@@ -1,0 +1,50 @@
+{
+  "name": "n8n-nodes-metroerp",
+  "version": "0.3.0",
+  "description": "n8n node for MetroERP contacts, invoices, and vendor bills",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "metroerp",
+    "metro",
+    "odoo",
+    "accounting"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "Metro",
+    "email": "support@metrogroup.solutions"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "n8n-node build",
+    "dev": "n8n-node dev",
+    "lint": "n8n-node lint",
+    "release": "n8n-node release"
+  },
+  "files": [
+    "credentials",
+    "nodes",
+    "index.js",
+    "LICENSE",
+    "README.md"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "credentials/MetroErpApi.credentials.js"
+    ],
+    "nodes": [
+      "nodes/MetroErp/MetroErp.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@n8n/node-cli": "^0.23.0"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
+  "engines": {
+    "node": ">=20.15"
+  }
+}

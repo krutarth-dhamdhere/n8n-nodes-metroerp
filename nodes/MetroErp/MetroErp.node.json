@@ -1,0 +1,14 @@
+{
+  "node": "n8n-nodes-metroerp.metroErp",
+  "nodeVersion": "1.0",
+  "codexVersion": "1.0",
+  "categories": ["Finance & Accounting", "Productivity"],
+  "resources": {
+    "primaryDocumentation": [
+      {
+        "url": "https://metrogroup.solutions/"
+      }
+    ]
+  },
+  "alias": ["metro", "metroerp", "odoo", "accounting", "invoice", "bill", "contact"]
+}
