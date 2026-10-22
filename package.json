@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-metroerp",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "n8n node for MetroERP contacts, invoices, and vendor bills",
   "keywords": [
     "n8n-community-node-package",
@@ -17,7 +17,7 @@
   },
   "author": {
     "name": "Metro",
-    "email": "support@metrogroup.solutions"
+    "email": "krutarth@metrogroup.solutions"
   },
   "main": "index.js",
   "scripts": {
