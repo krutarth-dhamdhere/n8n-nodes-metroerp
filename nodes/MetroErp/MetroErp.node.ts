@@ -1,5 +1,7 @@
 import {
 	type IExecuteFunctions,
+	type JsonObject,
+	NodeApiError,
 	NodeConnectionTypes,
 	NodeOperationError,
 } from 'n8n-workflow';
@@ -862,7 +864,7 @@ export class MetroErp {
 					});
 					continue;
 				}
-				throw error;
+				throw new NodeApiError(this.getNode(), error as JsonObject);
 			}
 		}
 
