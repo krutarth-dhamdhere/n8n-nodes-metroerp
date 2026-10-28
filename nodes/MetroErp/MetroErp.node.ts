@@ -798,7 +798,7 @@ export class MetroErp {
 				name: 'post',
 				type: 'boolean',
 				default: false,
-				description: 'On update, post the invoice when the Metro API key has Post Invoices enabled. Create always follows that API key setting.',
+				description: 'Whether to post the invoice on update when the API key has Post Invoices enabled. Create always follows that API key setting.',
 				displayOptions: {
 					show: {
 						resource: ['invoice', 'bill'],
