@@ -1,5 +1,7 @@
 # Publishes this n8n community node package to npm on every version tag push.
 # n8n verification requires GitHub Actions plus an npm provenance statement.
+# Auth is npm Trusted Publishing (GitHub OIDC). Do not set NPM_TOKEN:
+# a normal npm token makes publish demand a one-time password.
 
 name: Publish
 
@@ -24,14 +26,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
+          registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
       - name: Release
-        run: |
-          [ -n "$NPM_TOKEN" ] && npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
-          npm run release
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm run release
