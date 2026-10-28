@@ -42,7 +42,7 @@ Search for **MetroERP**.
 3. Add **MetroERP**.
 4. Turn on **JSON Parameters** and map columns in **JSON Body**.
 
-Invoice columns: `customer_name`, `email`, `reference`, `currency`, `description`, `quantity`, `unit_amount`.
+Invoice columns: `customer_name`, `email`, `phone`, `uen`, `address`, `reference`, `currency`, `description`, `quantity`, `unit_amount`.
 
 Bill columns: `vendor_name`, `email`, `reference`, `currency`, `description`, `quantity`, `unit_amount`.
 

@@ -10,5 +10,5 @@
       }
     ]
   },
-  "alias": ["metro", "metroerp", "odoo", "accounting", "invoice", "bill", "contact"]
+  "alias": ["metro", "metroerp", "accounting", "invoice", "bill", "contact"]
 }

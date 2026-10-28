@@ -1,24 +1,23 @@
 {
   "name": "n8n-nodes-metroerp",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "n8n node for MetroERP contacts, invoices, and vendor bills",
   "keywords": [
     "n8n-community-node-package",
     "n8n",
     "metroerp",
     "metro",
-    "odoo",
     "accounting"
   ],
   "license": "MIT",
   "homepage": "https://metrogroup.solutions/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/krutarthmetro/n8n-nodes-metroerp.git"
+    "url": "git+https://github.com/krutarth-dhamdhere/n8n-nodes-metroerp.git"
   },
   "author": {
-    "name": "Metro",
-    "email": "krutarth@metrogroup.solutions"
+    "name": "Metro Group Pte Ltd",
+    "email": "support@metrogroup.solutions"
   },
   "main": "dist/index.js",
   "scripts": {

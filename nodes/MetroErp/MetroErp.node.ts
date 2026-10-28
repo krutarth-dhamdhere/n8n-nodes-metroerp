@@ -100,6 +100,8 @@ async function handleContact(baseUrl, operation, itemIndex) {
 			name: this.getNodeParameter('name', itemIndex),
 			email: this.getNodeParameter('email', itemIndex) || undefined,
 			phone: this.getNodeParameter('phone', itemIndex) || undefined,
+			uen: this.getNodeParameter('uen', itemIndex) || undefined,
+			address: this.getNodeParameter('address', itemIndex) || undefined,
 			is_company: this.getNodeParameter('isCompany', itemIndex),
 		};
 		return apiRequest.call(this, baseUrl, 'POST', '/api/n8n/v1/contacts', body);
@@ -124,9 +126,13 @@ async function handleContact(baseUrl, operation, itemIndex) {
 		const name = this.getNodeParameter('name', itemIndex);
 		const email = this.getNodeParameter('email', itemIndex);
 		const phone = this.getNodeParameter('phone', itemIndex);
+		const uen = this.getNodeParameter('uen', itemIndex);
+		const address = this.getNodeParameter('address', itemIndex);
 		if (name) body.name = name;
 		if (email) body.email = email;
 		if (phone) body.phone = phone;
+		if (uen) body.uen = uen;
+		if (address) body.address = address;
 		body.is_company = this.getNodeParameter('isCompany', itemIndex);
 		return apiRequest.call(this, baseUrl, 'PUT', `/api/n8n/v1/contacts/${id}`, body);
 	}
@@ -212,10 +218,19 @@ async function handleInvoice(baseUrl, operation, itemIndex, resource) {
 			const contactName = this.getNodeParameter('contactName', itemIndex);
 			const contactEmail = this.getNodeParameter('contactEmail', itemIndex);
 			if (!partnerId && contactName) {
-				body.contact = {
+				const contact: Record<string, unknown> = {
 					name: contactName,
 					email: contactEmail || undefined,
 				};
+				if (!isBill) {
+					const contactPhone = this.getNodeParameter('contactPhone', itemIndex);
+					const contactUen = this.getNodeParameter('contactUen', itemIndex);
+					const contactAddress = this.getNodeParameter('contactAddress', itemIndex);
+					if (contactPhone) contact.phone = contactPhone;
+					if (contactUen) contact.uen = contactUen;
+					if (contactAddress) contact.address = contactAddress;
+				}
+				body.contact = contact;
 			}
 			const lines = body.line_items as unknown[] | undefined;
 			if (!lines || !lines.length) {
@@ -257,7 +272,10 @@ const invoiceJsonDefault = `={{
   "type": "invoice",
   "contact": {
     "name": $json.customer_name,
-    "email": $json.email
+    "email": $json.email,
+    "phone": $json.phone,
+    "uen": $json.uen,
+    "address": $json.address
   },
   "reference": $json.reference,
   "currency": $json.currency,
@@ -437,6 +455,8 @@ export class MetroErp {
   "name": $json.name || $json.customer_name,
   "email": $json.email,
   "phone": $json.phone,
+  "uen": $json.uen,
+  "address": $json.address,
   "is_company": true
 }
 }}`,
@@ -509,6 +529,32 @@ export class MetroErp {
 			{
 				displayName: 'Phone',
 				name: 'phone',
+				type: 'string',
+				default: '',
+				displayOptions: {
+					show: {
+						resource: ['contact'],
+						operation: ['create', 'update'],
+						jsonParameters: [false],
+					},
+				},
+			},
+			{
+				displayName: 'UEN',
+				name: 'uen',
+				type: 'string',
+				default: '',
+				displayOptions: {
+					show: {
+						resource: ['contact'],
+						operation: ['create', 'update'],
+						jsonParameters: [false],
+					},
+				},
+			},
+			{
+				displayName: 'Address',
+				name: 'address',
 				type: 'string',
 				default: '',
 				displayOptions: {
@@ -656,6 +702,45 @@ export class MetroErp {
 				},
 			},
 			{
+				displayName: 'Contact Phone',
+				name: 'contactPhone',
+				type: 'string',
+				default: '',
+				displayOptions: {
+					show: {
+						resource: ['invoice'],
+						operation: ['create'],
+						jsonParameters: [false],
+					},
+				},
+			},
+			{
+				displayName: 'Contact UEN',
+				name: 'contactUen',
+				type: 'string',
+				default: '',
+				displayOptions: {
+					show: {
+						resource: ['invoice'],
+						operation: ['create'],
+						jsonParameters: [false],
+					},
+				},
+			},
+			{
+				displayName: 'Contact Address',
+				name: 'contactAddress',
+				type: 'string',
+				default: '',
+				displayOptions: {
+					show: {
+						resource: ['invoice'],
+						operation: ['create'],
+						jsonParameters: [false],
+					},
+				},
+			},
+			{
 				displayName: 'Reference',
 				name: 'reference',
 				type: 'string',
@@ -713,7 +798,7 @@ export class MetroErp {
 				name: 'post',
 				type: 'boolean',
 				default: false,
-				description: 'Whether to post (confirm) the invoice after create/update',
+				description: 'On update, post the invoice when the Metro API key has Post Invoices enabled. Create always follows that API key setting.',
 				displayOptions: {
 					show: {
 						resource: ['invoice', 'bill'],
@@ -792,7 +877,7 @@ export class MetroErp {
 								name: 'taxIds',
 								type: 'string',
 								default: '',
-								description: 'Comma-separated Odoo tax IDs, e.g. 1,2',
+								description: 'Comma-separated tax IDs, e.g. 1,2',
 							},
 							{
 								displayName: 'Unit Amount',
